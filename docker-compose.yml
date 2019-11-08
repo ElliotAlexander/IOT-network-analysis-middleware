@@ -1,8 +1,15 @@
 version: '3.3'
 
 services:
-  db:
+  postgres:
     image: postgres
     restart: always
+    ports:
+       - "5432:5432"
     environment:
       POSTGRES_PASSWORD: tallest-tree 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
