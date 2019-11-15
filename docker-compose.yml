@@ -4,6 +4,8 @@ services:
   postgres:
     image: postgres
     restart: always
+    build:
+       context: ./postgres-sql/
     ports:
        - "5432:5432"
     environment:
