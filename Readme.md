@@ -21,10 +21,10 @@ To run the project, simple use:
 
 Once the servers have started, you should have the output of all three services. Check for errors, and check connectivity. The ports for each service are:
 
-GraphQL => http://localhost:5000/graphql
+- GraphQL => http://localhost:5000/graphql
 
-GraphiQL => http://localhost:5000/graphiql
+- GraphiQL => http://localhost:5000/graphiql
 
-Adminer => http://localhost:8080/adminer
+- Adminer => http://localhost:8080/adminer
 
-Postgres (No Web GUI) => localhost:5432
+- Postgres (No Web GUI) => localhost:5432
