@@ -17,3 +17,11 @@ CREATE TABLE IF NOT EXISTS device_stats(
    packet_count BIGINT,
    data_transferred BIGINT
 );
+
+CREATE TABLE IF NOT EXISTS port_scanning(
+   uuid BYTEA PRIMARY KEY,
+   device_hostname VARCHAR(100),
+   port_number INT,
+   port_status BOOLEAN NOT NULL,
+   last_scanned TIMESTAMP 
+);
