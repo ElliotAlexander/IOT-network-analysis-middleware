@@ -17,3 +17,15 @@ CREATE TABLE IF NOT EXISTS device_stats(
    packet_count BIGINT,
    data_transferred BIGINT
 );
+
+CREATE TABLE IF NOT EXISTS packet_counts_over_time(
+   uuid BYTEA,
+   timestamp TIMESTAMP, 
+   packet_count BIGINT,
+   https_packet_count BIGINT,
+   PRIMARY KEY (uuid, timestamp)
+);
+
+create function traffic(a bytea) returns packet_counts_over_time as $$ select * from packet_counts_over_time where uuid = a $$ LANGUAGE sql STABLE;
+
+create function traffic_for_uuid(a bytea) returns packet_counts_over_time as $$ select * from packet_counts_over_time where uuid = a $$ LANGUAGE sql STABLE;
