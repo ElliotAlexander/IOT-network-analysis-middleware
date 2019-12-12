@@ -15,5 +15,8 @@ CREATE TABLE IF NOT EXISTS devices(
 CREATE TABLE IF NOT EXISTS device_stats(
    uuid BYTEA PRIMARY KEY,
    packet_count BIGINT,
-   data_transferred BIGINT
+   https_packet_count BIGINT,
+   data_transferred BIGINT,
+   data_in BIGINT,
+   data_out BIGINT
 );
