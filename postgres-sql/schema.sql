@@ -15,7 +15,10 @@ CREATE TABLE IF NOT EXISTS devices(
 CREATE TABLE IF NOT EXISTS device_stats(
    uuid BYTEA PRIMARY KEY,
    packet_count BIGINT,
-   data_transferred BIGINT
+   https_packet_count BIGINT,
+   data_transferred BIGINT,
+   data_in BIGINT,
+   data_out BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS port_scanning(
@@ -24,3 +27,19 @@ CREATE TABLE IF NOT EXISTS port_scanning(
    open_udp_ports VARCHAR,
    last_scanned TIMESTAMP 
 );
+
+CREATE TABLE IF NOT EXISTS packet_counts_over_time(
+   uuid BYTEA,
+   timestamp TIMESTAMP,
+   packet_count BIGINT,
+   https_packet_count BIGINT,
+   PRIMARY KEY(uuid, timestamp)
+);
+
+CREATE TABLE IF NOT EXISTS device_dns_storage(
+   uuid BYTEA,
+   url VARCHAR(100),
+   PRIMARY KEY(uuid, url)
+);
+
+CREATE FUNCTION getDNSQueries(a bytea) RETURNS SETOF VARCHAR(100) AS $$ SELECT url FROM device_dns_storage WHERE uuid=a;$$ LANGUAGE SQL IMMUTABLE STRICT;
