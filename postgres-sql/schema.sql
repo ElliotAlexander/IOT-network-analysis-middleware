@@ -21,6 +21,13 @@ CREATE TABLE IF NOT EXISTS device_stats(
    data_out BIGINT
 );
 
+CREATE TABLE IF NOT EXISTS port_scanning(
+   uuid BYTEA PRIMARY KEY,
+   open_tcp_ports VARCHAR,
+   open_udp_ports VARCHAR,
+   last_scanned TIMESTAMP 
+);
+
 CREATE TABLE IF NOT EXISTS packet_counts_over_time(
    uuid BYTEA,
    timestamp TIMESTAMP,
