@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS devices(
    uuid BYTEA PRIMARY KEY,
+   mac_addr VARCHAR(64) NOT NULL,
    device_nickname VARCHAR(100),
    device_hostname VARCHAR(100),
    internal_ip_v4 VARCHAR(20),
