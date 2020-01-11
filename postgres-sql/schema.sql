@@ -1,11 +1,22 @@
-DROP SCHEMA IF EXISTS example CASCADE;
-DROP SCHEMA IF EXISTS example_private CASCADE;
-CREATE SCHEMA example_private; 
-CREATE SCHEMA example;
+DROP SCHEMA IF EXISTS authentication CASCADE;
+DROP SCHEMA IF EXISTS authentication_private CASCADE;
+DROP SCHEMA IF EXISTS backend CASCADE;
+CREATE SCHEMA authentication_private; 
+CREATE SCHEMA authentication;
+CREATE SCHEMA backend;
 
+CREATE ROLE anonymous;
+GRANT anonymous TO current_user;
+
+-- When logged in, the user should have the role medium_user
+CREATE ROLE medium_user;
+GRANT medium_user TO current_user;
+
+-- We need this for login tokens
 CREATE EXTENSION pgcrypto; 
 
-CREATE TABLE IF NOT EXISTS devices(
+
+CREATE TABLE IF NOT EXISTS backend.devices(
    uuid BYTEA PRIMARY KEY,
    mac_addr VARCHAR(64) NOT NULL,
    device_nickname VARCHAR(100),
@@ -19,14 +30,14 @@ CREATE TABLE IF NOT EXISTS devices(
    device_type VARCHAR(100)
 );
 
-CREATE TABLE IF NOT EXISTS port_scanning(
+CREATE TABLE IF NOT EXISTS backend.port_scanning(
    uuid BYTEA PRIMARY KEY,
    open_tcp_ports VARCHAR,
    open_udp_ports VARCHAR,
    last_scanned TIMESTAMP 
 );
 
-CREATE TABLE IF NOT EXISTS device_stats(
+CREATE TABLE IF NOT EXISTS backend.device_stats(
    uuid BYTEA PRIMARY KEY,
    packet_count BIGINT,
    https_packet_count BIGINT,
@@ -35,7 +46,7 @@ CREATE TABLE IF NOT EXISTS device_stats(
    data_out BIGINT
 );
 
-CREATE TABLE IF NOT EXISTS device_stats_over_time(
+CREATE TABLE IF NOT EXISTS backend.device_stats_over_time(
    uuid BYTEA,
    timestamp TIMESTAMP,
    packet_count BIGINT,
@@ -46,15 +57,15 @@ CREATE TABLE IF NOT EXISTS device_stats_over_time(
    PRIMARY KEY(uuid, timestamp)
 );
 
-CREATE TABLE IF NOT EXISTS device_dns_storage(
+CREATE TABLE IF NOT EXISTS backend.device_dns_storage(
    uuid BYTEA,
    url VARCHAR(100),
    PRIMARY KEY(uuid, url)
 );
 
-CREATE FUNCTION getDNSQueries(a bytea) RETURNS SETOF VARCHAR(100) AS $$ SELECT url FROM device_dns_storage WHERE uuid=a;$$ LANGUAGE SQL IMMUTABLE STRICT;
+CREATE FUNCTION backend.getDNSQueries(a bytea) RETURNS SETOF VARCHAR(100) AS $$ SELECT url FROM backend.device_dns_storage WHERE uuid=a;$$ LANGUAGE SQL IMMUTABLE STRICT;
 
-CREATE TYPE example.jwt_token AS (
+CREATE TYPE authentication.jwt_token AS (
   role TEXT,
   exp INTEGER,
   person_id INTEGER,
@@ -62,7 +73,7 @@ CREATE TYPE example.jwt_token AS (
   username VARCHAR
 );
 
-CREATE TABLE IF NOT EXISTS example_private.person_account (
+CREATE TABLE IF NOT EXISTS authentication_private.person_account (
   role TEXT,
   exp INTEGER,
   person_id INTEGER,
@@ -72,32 +83,40 @@ CREATE TABLE IF NOT EXISTS example_private.person_account (
   email TEXT
 );
 
-CREATE FUNCTION example.authenticate(
+CREATE FUNCTION authentication.authenticate(
   email text,
   password text
-) RETURNS example.jwt_token AS $$
+) RETURNS authentication.jwt_token AS $$
 DECLARE
-  account example_private.person_account;
+  account authentication_private.person_account;
 BEGIN
   SELECT a.* INTO account
-    FROM example_private.person_account AS a
+    FROM authentication_private.person_account AS a
     WHERE a.email = authenticate.email;
 
   IF account.password_hash = crypt(password, account.password_hash) THEN
     RETURN (
-      'person_role',
+      'medium_user',
       extract(epoch from now() + interval '7 days'),
       account.person_id,
       account.is_admin,
       account.username
-    )::example.jwt_token;
+    )::authentication.jwt_token;
   ELSE
     RETURN null;
   END IF;
 END;
 $$ LANGUAGE plpgsql strict security definer;
 
-INSERT INTO example_private.person_account (email, password_hash) VALUES (
+INSERT INTO authentication_private.person_account (role,person_id,username, email, password_hash) VALUES (
+  'medium_user',
+  '1',
+  'test',
   'test',
   crypt('test',gen_salt('bf'))
 );
+
+GRANT USAGE ON SCHEMA authentication TO anonymous; 
+GRANT USAGE ON SCHEMA backend TO medium_user;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA backend TO medium_user;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA backend TO medium_user;
