@@ -40,6 +40,8 @@ CREATE TABLE IF NOT EXISTS packet_counts_over_time(
 CREATE TABLE IF NOT EXISTS device_dns_storage(
    uuid BYTEA,
    url VARCHAR(100),
+   latitude NUMERIC,
+   longtitude NUMERIC,
    PRIMARY KEY(uuid, url)
 );
 
