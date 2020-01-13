@@ -17,6 +17,8 @@ services:
       - 8080:8080
   postgraphile:
       restart: always
+      depends_on:
+         - postgres
       build:
          context: ./postgraphile/
       ports:
