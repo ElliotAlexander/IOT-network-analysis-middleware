@@ -116,6 +116,15 @@ INSERT INTO authentication_private.person_account (role,person_id,username, emai
   crypt('test',gen_salt('bf'))
 );
 
+
+CREATE TABLE IF NOT EXISTS ip_address_location(
+    ip_address VARCHAR(50),
+    latitude NUMERIC,
+    longitude NUMERIC,
+    last_scanned TIMESTAMP
+    PRIMARY KEY(ip_address)
+)
+
 GRANT USAGE ON SCHEMA authentication TO anonymous; 
 GRANT USAGE ON SCHEMA backend TO medium_user;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA backend TO medium_user;
