@@ -60,8 +60,6 @@ CREATE TABLE IF NOT EXISTS backend.device_stats_over_time(
 CREATE TABLE IF NOT EXISTS backend.device_dns_storage(
    uuid BYTEA,
    url VARCHAR(100),
-   latitude NUMERIC,
-   longtitude NUMERIC,
    PRIMARY KEY(uuid, url)
 );
 
