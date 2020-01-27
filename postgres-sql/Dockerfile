@@ -1,7 +1,8 @@
 FROM postgres
 
 RUN apt-get update && apt-get install -y git
-RUN mkdir /var/lib/postgres &&\
+RUN rm -R /var/lib/postgres && \
+    mkdir -p /var/lib/postgres &&\
     chmod 775 /var/lib/postgres&&\
     chown postgres /var/lib/postgres
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
