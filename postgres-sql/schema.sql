@@ -30,6 +30,14 @@ CREATE TABLE IF NOT EXISTS backend.devices(
    device_type VARCHAR(100)
 );
 
+CREATE TABLE IF NOT EXISTS backend.device_data_sum_over_time(
+  timestamp TIMESTAMP,
+  data_transferred BIGINT,
+  data_in BIGINT,
+  data_out BIGINT,
+  PRIMARY KEY(timestamp)
+);
+
 CREATE TABLE IF NOT EXISTS backend.port_scanning(
    uuid BYTEA PRIMARY KEY,
    open_tcp_ports VARCHAR,
