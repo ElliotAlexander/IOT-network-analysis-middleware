@@ -118,11 +118,12 @@ INSERT INTO authentication_private.person_account (role,person_id,username, emai
 
 
 CREATE TABLE IF NOT EXISTS backend.ip_address_location(
+    uuid BYTEA,
     ip_address VARCHAR(50),
     latitude NUMERIC,
     longitude NUMERIC,
     last_scanned TIMESTAMP,
-    PRIMARY KEY(ip_address)
+    PRIMARY KEY(uuid, ip_address)
 );
 
 GRANT USAGE ON SCHEMA authentication TO anonymous; 
