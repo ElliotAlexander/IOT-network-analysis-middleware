@@ -117,7 +117,7 @@ INSERT INTO authentication_private.person_account (role,person_id,username, emai
 );
 
 
-CREATE TABLE IF NOT EXISTS ip_address_location(
+CREATE TABLE IF NOT EXISTS backend.ip_address_location(
     ip_address VARCHAR(50),
     latitude NUMERIC,
     longitude NUMERIC,
