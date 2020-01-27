@@ -2,7 +2,7 @@ FROM postgres
 
 RUN apt-get update && apt-get install -y git
 
-RUN rm -R /var/lib/postgres &&\
+RUN rm -rf /var/lib/postgres &&\
     mkdir -p /var/lib/postgres &&\
     chmod 775 /var/lib/postgres&&\
     chown postgres /var/lib/postgres
