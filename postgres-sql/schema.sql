@@ -130,3 +130,4 @@ GRANT USAGE ON SCHEMA authentication TO anonymous;
 GRANT USAGE ON SCHEMA backend TO medium_user;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA backend TO medium_user;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA backend TO medium_user;
+GRANT USAGE ON SCHEMA authentication TO anonymous;
