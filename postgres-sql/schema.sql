@@ -130,6 +130,7 @@ CREATE TABLE IF NOT EXISTS backend.ip_address_location(
     latitude NUMERIC,
     longitude NUMERIC,
     last_scanned TIMESTAMP,
+    is_tor_node BOOLEAN,
     PRIMARY KEY(uuid, ip_address)
 );
 
