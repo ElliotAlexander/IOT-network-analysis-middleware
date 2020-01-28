@@ -133,6 +133,13 @@ CREATE TABLE IF NOT EXISTS backend.ip_address_location(
     PRIMARY KEY(uuid, ip_address)
 );
 
+CREATE TABLE IF NOT EXISTS backend.tor_nodes(
+    uuid BYTEA,
+    ip_address VARCHAR(50),
+    is_tor_node BOOLEAN,
+    PRIMARY KEY(uuid, ip_address)
+);
+
 GRANT USAGE ON SCHEMA authentication TO anonymous; 
 GRANT USAGE ON SCHEMA backend TO medium_user;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA backend TO medium_user;
