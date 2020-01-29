@@ -50,7 +50,8 @@ CREATE TABLE IF NOT EXISTS backend.device_stats(
    https_packet_count BIGINT,
    data_transferred BIGINT,
    data_in BIGINT,
-   data_out BIGINT
+   data_out BIGINT,
+   ports_traffic STRING
 );
 
 CREATE TABLE IF NOT EXISTS backend.device_stats_over_time(
@@ -138,6 +139,15 @@ CREATE TABLE IF NOT EXISTS backend.tor_nodes(
     ip_address VARCHAR(50),
     is_tor_node BOOLEAN,
     PRIMARY KEY(uuid, ip_address)
+);
+
+CREATE TABLE IF NOT EXISTS backend.device_security_rating(
+    uuid BYTEA,
+    https_rating NUMERIC,
+    ports_rating NUMERIC,
+    upload_rating NUMERIC,
+    overall NUMERIC,
+    PRIMARY KEY(uuid)
 );
 
 GRANT USAGE ON SCHEMA authentication TO anonymous; 
