@@ -13,7 +13,7 @@ CREATE ROLE medium_user;
 GRANT medium_user TO current_user;
 
 -- We need this for login tokens
-CREATE EXTENSION pgcrypto; 
+CREATE EXTENSION  IF NOT EXISTS "pgcrypto"; 
 
 
 CREATE TABLE IF NOT EXISTS backend.devices(
@@ -50,7 +50,8 @@ CREATE TABLE IF NOT EXISTS backend.device_stats(
    https_packet_count BIGINT,
    data_transferred BIGINT,
    data_in BIGINT,
-   data_out BIGINT
+   data_out BIGINT,
+   ports_traffic TEXT
 );
 
 CREATE TABLE IF NOT EXISTS backend.device_stats_over_time(
@@ -140,8 +141,33 @@ CREATE TABLE IF NOT EXISTS backend.tor_nodes(
     PRIMARY KEY(uuid, ip_address)
 );
 
+CREATE TABLE IF NOT EXISTS backend.device_security_rating(
+    uuid BYTEA,
+    https_rating NUMERIC,
+    ports_rating NUMERIC,
+    upload_rating NUMERIC,
+    overall NUMERIC,
+    PRIMARY KEY(uuid)
+);
+
+CREATE FUNCTION backend.delete_device_function(uuid_to_delete BYTEA) RETURNS TEXT
+AS $$
+BEGIN
+  DELETE FROM backend.ip_address_location WHERE backend.ip_address_location.uuid = uuid_to_delete;
+  DELETE FROM backend.device_security_rating WHERE backend.device_security_rating.uuid = uuid_to_delete;
+  DELETE FROM backend.tor_nodes WHERE backend.tor_nodes.uuid = uuid_to_delete;
+  DELETE FROM backend.device_dns_storage WHERE backend.device_dns_storage.uuid = uuid_to_delete;
+  DELETE FROM backend.device_stats WHERE backend.device_stats.uuid = uuid_to_delete;
+  DELETE FROM backend.device_stats_over_time WHERE backend.device_stats_over_time.uuid = uuid_to_delete;
+  DELETE FROM backend.devices WHERE backend.devices.uuid = uuid_to_delete;
+  RETURN 'Success';
+END
+$$ LANGUAGE plpgsql VOLATILE strict security definer;
+
+
 GRANT USAGE ON SCHEMA authentication TO anonymous; 
 GRANT USAGE ON SCHEMA backend TO medium_user;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA backend TO medium_user;
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA backend TO medium_user;
 GRANT USAGE ON SCHEMA authentication TO anonymous;
+GRANT USAGE ON TYPE authentication.jwt_token TO anonymous;
