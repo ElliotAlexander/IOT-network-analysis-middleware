@@ -1,6 +1,8 @@
-# GDP Group 31 Middlewere
+# IOT Network Analysis Middleware
 
-This part of the project forms the database and API layer between the backend and the frontend. As a part of this, we have two major components:
+This repository forms the middlware section of the IOT Network Analysis project, which attempted to build a proof of concept tool for passive security analysis of IoT devices.
+
+This part of the project forms the database and API layer between the backend and the frontend. As a part of this, we have three major components:
 - Postgres
 - Postgraphile
 - Adminer
